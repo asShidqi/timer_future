@@ -146,21 +146,26 @@ impl TimerFuture {
 fn main() {
     let (executor, spawner) = new_executor_and_spawner();
 
-    // Spawn sebuah task untuk mencetak sebelum dan sesudah menunggu timer.
     spawner.spawn(async {
-        println!("Fayyed: howdy!");
-        // Tunggu TimerFuture selesai setelah dua detik.
+        println!("Fayyed: howdy 1!");
         TimerFuture::new(Duration::new(2, 0)).await;
-        println!("Fayyed: done!");
+        println!("Fayyed: done 1!");
     });
 
-    println!("Fayyed: hey hey");
+    spawner.spawn(async {
+        println!("Fayyed: howdy 2!");
+        TimerFuture::new(Duration::new(1, 0)).await; // Timer lebih cepat
+        println!("Fayyed: done 2!");
+    });
 
-    // Drop spawner agar executor tahu bahwa ia telah selesai dan tidak akan
-    // menerima task masuk lagi untuk dijalankan.
-    // Ini penting agar loop `recv()` di `executor.run()` bisa berakhir.
-    drop(spawner);
+    spawner.spawn(async {
+        println!("Fayyed: howdy 3!");
+        TimerFuture::new(Duration::new(3, 0)).await; // Timer lebih lama
+        println!("Fayyed: done 3!");
+    });
 
-    // Jalankan executor sampai antrian task kosong.
+    println!("Fayyed: hey hey (setelah semua spawn)");
+
+    // drop(spawner);
     executor.run();
 }
