@@ -154,6 +154,8 @@ fn main() {
         println!("Fayyed: done!");
     });
 
+    println!("Fayyed: hey hey");
+
     // Drop spawner agar executor tahu bahwa ia telah selesai dan tidak akan
     // menerima task masuk lagi untuk dijalankan.
     // Ini penting agar loop `recv()` di `executor.run()` bisa berakhir.
